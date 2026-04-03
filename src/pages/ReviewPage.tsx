@@ -130,6 +130,7 @@ const ReviewPage: React.FC = () => {
               ))}
               {selectedTags.length > 0 && (
                 <button
+                  key="clear-filter"
                   onClick={() => setSelectedTags([])}
                   className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200 transition-colors"
                 >
