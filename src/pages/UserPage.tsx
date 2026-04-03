@@ -3,7 +3,7 @@ import ParticleEffect from '../components/ParticleEffect';
 import { useReviewStore } from '../store/reviewStore';
 import { useAnimeStore } from '../store/animeStore';
 import { useUserStore } from '../store/userStore';
-import { User, Camera, Download, Upload, Settings, Info, Edit2, Check } from 'lucide-react';
+import { User, Camera, Download, Upload, Settings, Info, Edit2, Check, Github } from 'lucide-react';
 
 const UserPage: React.FC = () => {
   const [importOption, setImportOption] = useState<'overwrite' | 'merge'>('overwrite');
@@ -146,12 +146,16 @@ const UserPage: React.FC = () => {
       <ParticleEffect color="rgba(99, 102, 241, 0.2)" count={25} />
       
       <div className="relative">
-        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-90"></div>
+        <div className="absolute top-0 left-0 right-0 h-56">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-0 right-0 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 translate-y-1/4"></div>
+        </div>
         
         <div className="container mx-auto px-4 pt-8 relative z-10">
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-white mb-2">个人中心</h1>
-            <p className="text-white/80 text-sm">记录生活，珍藏回忆</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">个人中心</h1>
+            <p className="text-gray-500 text-sm">记录生活，珍藏回忆</p>
           </div>
           
           <div className="bg-white rounded-3xl shadow-2xl p-6 mb-6 transform transition-all duration-300 hover:shadow-3xl">
@@ -355,7 +359,12 @@ const UserPage: React.FC = () => {
               <div className="px-6 py-4">
                 <div className="flex items-center justify-between py-2">
                   <span className="text-gray-600">版本</span>
-                  <span className="text-gray-800 font-medium">1.0.0</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-gray-800 font-medium">1.0.1</span>
+                    <a href="https://github.com/dplink/TraeBin" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800 transition-colors">
+                      <Github className="w-4 h-4" />
+                    </a>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <span className="text-gray-600">开发者</span>
