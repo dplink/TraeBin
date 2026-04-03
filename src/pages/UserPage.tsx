@@ -68,9 +68,25 @@ const UserPage: React.FC = () => {
           setAnimeReviews(importData.data.animeData);
           setImportMessage('数据已成功覆盖');
         } else {
-          addReviews(importData.data.reviewData);
-          addAnimeReviews(importData.data.animeData);
-          setImportMessage('数据已成功合并');
+          // 去重：过滤掉已存在的 ID
+          const existingReviewIds = new Set(reviews.map(r => r.id));
+          const newReviews = importData.data.reviewData.filter(r => !existingReviewIds.has(r.id));
+          
+          const existingAnimeIds = new Set(animeReviews.map(a => a.id));
+          const newAnimeReviews = importData.data.animeData.filter(a => !existingAnimeIds.has(a.id));
+          
+          addReviews(newReviews);
+          addAnimeReviews(newAnimeReviews);
+          
+          const totalImported = newReviews.length + newAnimeReviews.length;
+          const totalSkipped = (importData.data.reviewData.length - newReviews.length) + 
+                              (importData.data.animeData.length - newAnimeReviews.length);
+          
+          if (totalSkipped > 0) {
+            setImportMessage(`成功合并 ${totalImported} 条数据，跳过 ${totalSkipped} 条重复数据`);
+          } else {
+            setImportMessage(`成功合并 ${totalImported} 条数据`);
+          }
         }
 
         // 清空文件选择

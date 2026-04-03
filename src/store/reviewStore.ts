@@ -41,9 +41,13 @@ export const useReviewStore = create<ReviewStore>()(
         ),
       })),
       setReviews: (reviews) => set({ reviews }),
-      addReviews: (reviews) => set((state) => ({
-        reviews: [...state.reviews, ...reviews]
-      })),
+      addReviews: (reviews) => set((state) => {
+        const existingIds = new Set(state.reviews.map(r => r.id));
+        const newReviews = reviews.filter(r => !existingIds.has(r.id));
+        return {
+          reviews: [...state.reviews, ...newReviews]
+        };
+      }),
     }),
     {
       name: 'review-storage-v2',
