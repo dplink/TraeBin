@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Review - 日常复盘</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">Daily Review</h1>
+            <p class="app-subtitle">日常复盘 & 优化记录</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-content">
+            <!-- Today's Date -->
+            <div class="date-section">
+                <h2 id="current-date" class="date-title"></h2>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="tasks">待办事项</button>
+                <button class="tab" data-tab="review">复盘记录</button>
+                <button class="tab" data-tab="progress">进度追踪</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Tasks Tab -->
+                <div id="tasks" class="tab-panel active">
+                    <div class="task-input-section">
+                        <input type="text" id="task-input" placeholder="添加待办事项...">
+                        <button id="add-task">+</button>
+                    </div>
+                    <ul id="task-list" class="task-list">
+                        <!-- Tasks will be added here -->
+                    </ul>
+                </div>
+
+                <!-- Review Tab -->
+                <div id="review" class="tab-panel">
+                    <div class="review-input-section">
+                        <textarea id="review-input" placeholder="记录今日复盘和待优化事项..."></textarea>
+                        <button id="save-review">保存复盘</button>
+                    </div>
+                    <div id="review-history" class="review-history">
+                        <!-- Review history will be added here -->
+                    </div>
+                </div>
+
+                <!-- Progress Tab -->
+                <div id="progress" class="tab-panel">
+                    <div class="progress-stats">
+                        <div class="stat-card">
+                            <h3>完成率</h3>
+                            <div class="stat-value" id="completion-rate">0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>连续天数</h3>
+                            <div class="stat-value" id="streak-days">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>总任务数</h3>
+                            <div class="stat-value" id="total-tasks">0</div>
+                        </div>
+                    </div>
+                    <div class="progress-chart">
+                        <h3>最近7天完成情况</h3>
+                        <div class="chart-container">
+                            <canvas id="progress-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>© 2026 Daily Review App</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
