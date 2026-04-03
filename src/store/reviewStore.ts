@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface ReviewItem {
   id: string;
@@ -13,6 +13,8 @@ interface ReviewStore {
   addReview: (content: string, tags: string[]) => void;
   deleteReview: (id: string) => void;
   updateReview: (id: string, content: string, tags: string[]) => void;
+  setReviews: (reviews: ReviewItem[]) => void;
+  addReviews: (reviews: ReviewItem[]) => void;
 }
 
 export const useReviewStore = create<ReviewStore>()(
@@ -38,9 +40,18 @@ export const useReviewStore = create<ReviewStore>()(
           review.id === id ? { ...review, content, tags } : review
         ),
       })),
+      setReviews: (reviews) => set({ reviews }),
+      addReviews: (reviews) => set((state) => {
+        const existingIds = new Set(state.reviews.map(r => r.id));
+        const newReviews = reviews.filter(r => !existingIds.has(r.id));
+        return {
+          reviews: [...state.reviews, ...newReviews]
+        };
+      }),
     }),
     {
       name: 'review-storage-v2',
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
