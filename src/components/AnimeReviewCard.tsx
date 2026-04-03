@@ -1,37 +1,51 @@
 import React, { useState } from 'react';
-import { Trash2, Edit } from 'lucide-react';
-
-type Season = '冬' | '春' | '夏' | '秋';
+import { Trash2, Edit, X } from 'lucide-react';
 
 interface AnimeReviewCardProps {
   id: string;
   title: string;
-  year: number;
-  season: Season;
+  tags: string[];
   content: string;
   createdAt: string;
   onDelete: (id: string) => void;
-  onUpdate: (id: string, title: string, year: number, season: Season, content: string) => void;
+  onUpdate: (id: string, title: string, tags: string[], content: string) => void;
+  onTagClick: (tag: string) => void;
+  selectedTags: string[];
 }
 
 const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
   id,
   title,
-  year,
-  season,
+  tags,
   content,
   createdAt,
   onDelete,
   onUpdate,
+  onTagClick,
+  selectedTags,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
-  const [editYear, setEditYear] = useState(year.toString());
-  const [editSeason, setEditSeason] = useState<Season>(season);
+  const [editTags, setEditTags] = useState<string[]>([...tags]);
+  const [editTagInput, setEditTagInput] = useState('');
   const [editContent, setEditContent] = useState(content);
 
+  const handleEditTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && editTagInput.trim()) {
+      e.preventDefault();
+      if (editTags.length < 5 && !editTags.includes(editTagInput.trim())) {
+        setEditTags([...editTags, editTagInput.trim()]);
+        setEditTagInput('');
+      }
+    }
+  };
+
+  const removeEditTag = (tagToRemove: string) => {
+    setEditTags(editTags.filter((tag) => tag !== tagToRemove));
+  };
+
   const handleSave = () => {
-    onUpdate(id, editTitle, parseInt(editYear), editSeason, editContent);
+    onUpdate(id, editTitle, editTags, editContent);
     setIsEditing(false);
   };
 
@@ -46,8 +60,6 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
     });
   };
 
-  const seasons: Season[] = ['冬', '春', '夏', '秋'];
-
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mb-4 transition-all duration-300 hover:shadow-lg">
       {isEditing ? (
@@ -59,25 +71,36 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
             placeholder="新番名称..."
           />
-          <div className="flex space-x-2">
-            <input
-              type="number"
-              value={editYear}
-              onChange={(e) => setEditYear(e.target.value)}
-              className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-              placeholder="年份"
-              min="2000"
-              max="2100"
-            />
-            <select
-              value={editSeason}
-              onChange={(e) => setEditSeason(e.target.value as Season)}
-              className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            >
-              {seasons.map((s) => (
-                <option key={s} value={s}>{s}季</option>
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
+              {editTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-2 py-1 bg-pink-100 text-pink-800 rounded-full text-xs font-medium"
+                >
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() => removeEditTag(tag)}
+                    className="ml-1 text-pink-600 hover:text-pink-800"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
               ))}
-            </select>
+            </div>
+            <input
+              type="text"
+              value={editTagInput}
+              onChange={(e) => setEditTagInput(e.target.value)}
+              onKeyDown={handleEditTagKeyDown}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+              placeholder={editTags.length >= 5 ? '已达到最大tag数量' : '输入tag后按回车添加...'}
+              disabled={editTags.length >= 5}
+            />
+            <p className="text-xs text-gray-500">
+              已添加 {editTags.length}/5 个tag
+            </p>
           </div>
           <textarea
             value={editContent}
@@ -95,7 +118,8 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
             </button>
             <button
               onClick={handleSave}
-              className="px-3 py-1 bg-pink-500 text-white rounded-lg text-sm hover:bg-pink-600 transition-colors"
+              disabled={!editTitle.trim() || !editContent.trim() || editTags.length === 0}
+              className="px-3 py-1 bg-pink-500 text-white rounded-lg text-sm hover:bg-pink-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               保存
             </button>
@@ -106,13 +130,20 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-lg font-semibold text-pink-600">{title}</h3>
-              <div className="flex space-x-2 mt-1">
-                <span className="inline-block px-2 py-1 bg-pink-100 text-pink-800 rounded-full text-xs font-medium">
-                  {year}年
-                </span>
-                <span className="inline-block px-2 py-1 bg-pink-100 text-pink-800 rounded-full text-xs font-medium">
-                  {season}季
-                </span>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    onClick={() => onTagClick(tag)}
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors ${
+                      selectedTags.includes(tag)
+                        ? 'bg-pink-500 text-white'
+                        : 'bg-pink-100 text-pink-800 hover:bg-pink-200'
+                    }`}
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
               <p className="mt-2 text-gray-700">{content}</p>
             </div>
