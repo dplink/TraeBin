@@ -1,9 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+type Season = '冬' | '春' | '夏' | '秋';
+
 interface AnimeReview {
   id: string;
   title: string;
+  year: number;
+  season: Season;
   tags: string[];
   content: string;
   createdAt: string;
@@ -11,22 +15,24 @@ interface AnimeReview {
 
 interface AnimeStore {
   reviews: AnimeReview[];
-  addReview: (title: string, tags: string[], content: string) => void;
+  addReview: (title: string, year: number, season: Season, content: string) => void;
   deleteReview: (id: string) => void;
-  updateReview: (id: string, title: string, tags: string[], content: string) => void;
+  updateReview: (id: string, title: string, year: number, season: Season, content: string) => void;
 }
 
 export const useAnimeStore = create<AnimeStore>()(
   persist(
     (set) => ({
       reviews: [],
-      addReview: (title, tags, content) => set((state) => ({
+      addReview: (title, year, season, content) => set((state) => ({
         reviews: [
           ...state.reviews,
           {
             id: Date.now().toString(),
             title,
-            tags,
+            year,
+            season,
+            tags: [`${year}年`, `${season}季`],
             content,
             createdAt: new Date().toISOString(),
           },
@@ -35,14 +41,14 @@ export const useAnimeStore = create<AnimeStore>()(
       deleteReview: (id) => set((state) => ({
         reviews: state.reviews.filter((review) => review.id !== id),
       })),
-      updateReview: (id, title, tags, content) => set((state) => ({
+      updateReview: (id, title, year, season, content) => set((state) => ({
         reviews: state.reviews.map((review) =>
-          review.id === id ? { ...review, title, tags, content } : review
+          review.id === id ? { ...review, title, year, season, tags: [`${year}年`, `${season}季`], content } : review
         ),
       })),
     }),
     {
-      name: 'anime-review-storage-v2',
+      name: 'anime-review-storage-v3',
     }
   )
 );
