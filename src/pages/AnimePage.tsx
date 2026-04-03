@@ -30,8 +30,21 @@ const AnimePage: React.FC = () => {
     }
   };
 
+  const getSeasonNumber = (season: Season): number => {
+    switch (season) {
+      case '冬': return 1;
+      case '春': return 2;
+      case '夏': return 3;
+      case '秋': return 4;
+      default: return 2;
+    }
+  };
+
   const sortedReviews = [...reviews].sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    if (b.year !== a.year) {
+      return b.year - a.year;
+    }
+    return getSeasonNumber(b.season) - getSeasonNumber(a.season);
   });
 
   const filteredReviews = sortedReviews.filter((review) => {
@@ -124,7 +137,7 @@ const AnimePage: React.FC = () => {
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="relative pl-8 md:pl-10">
           {filteredReviews.length === 0 ? (
             <div className="bg-white rounded-lg shadow-md p-8 text-center">
               <p className="text-gray-500">
@@ -132,22 +145,27 @@ const AnimePage: React.FC = () => {
               </p>
             </div>
           ) : (
-            filteredReviews.map((review) => (
-              <AnimeReviewCard
-                key={review.id}
-                id={review.id}
-                title={review.title}
-                year={review.year}
-                season={review.season}
-                tags={review.tags}
-                content={review.content}
-                createdAt={review.createdAt}
-                onDelete={deleteReview}
-                onUpdate={updateReview}
-                onTagClick={toggleFilterTag}
-                selectedTags={selectedTags}
-              />
-            ))
+            <>
+              <div className="absolute left-3 md:left-4 top-0 bottom-0 w-0.5 bg-pink-200"></div>
+              {filteredReviews.map((review, index) => (
+                <div key={review.id} className="relative mb-8 last:mb-0">
+                  <div className="absolute left-[-30px] md:left-[-34px] top-4 w-6 h-6 bg-pink-500 rounded-full border-2 border-white shadow transition-transform hover:scale-110"></div>
+                  <AnimeReviewCard
+                    id={review.id}
+                    title={review.title}
+                    year={review.year}
+                    season={review.season}
+                    tags={review.tags}
+                    content={review.content}
+                    createdAt={review.createdAt}
+                    onDelete={deleteReview}
+                    onUpdate={updateReview}
+                    onTagClick={toggleFilterTag}
+                    selectedTags={selectedTags}
+                  />
+                </div>
+              ))}
+            </>
           )}
         </div>
       </div>

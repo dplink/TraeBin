@@ -31,6 +31,7 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
   selectedTags,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
   const [editYear, setEditYear] = useState(year.toString());
   const [editSeason, setEditSeason] = useState<Season>(season);
@@ -55,7 +56,10 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
   const seasons: Season[] = ['冬', '春', '夏', '秋'];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4 transition-all duration-300 hover:shadow-lg">
+    <div 
+      className="bg-white rounded-lg shadow-md p-4 mb-4 transition-all duration-300 hover:shadow-lg cursor-pointer"
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
       {isEditing ? (
         <div className="space-y-3">
           <input
@@ -94,13 +98,19 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
           />
           <div className="flex justify-end space-x-2">
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditing(false);
+              }}
               className="px-3 py-1 bg-gray-200 rounded-lg text-sm hover:bg-gray-300 transition-colors"
             >
               取消
             </button>
             <button
-              onClick={handleSave}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSave();
+              }}
               disabled={!editTitle.trim() || !editContent.trim()}
               className="px-3 py-1 bg-pink-500 text-white rounded-lg text-sm hover:bg-pink-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
@@ -111,13 +121,38 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
       ) : (
         <div className="space-y-2">
           <div className="flex justify-between items-start">
-            <div>
-              <h3 className="text-lg font-semibold text-pink-600">{title}</h3>
-              <div className="flex flex-wrap gap-2 mt-1">
+            <h3 className="text-lg font-semibold text-pink-600">{title}</h3>
+            <div className="flex space-x-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+                className="p-2 text-gray-400 hover:text-pink-500 transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(id);
+                }}
+                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          {isExpanded && (
+            <div className="space-y-2 mt-2">
+              <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    onClick={() => onTagClick(tag)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTagClick(tag);
+                    }}
                     className={`inline-block px-2 py-1 rounded-full text-xs font-medium cursor-pointer transition-colors ${
                       selectedTags.includes(tag)
                         ? 'bg-pink-500 text-white'
@@ -128,24 +163,10 @@ const AnimeReviewCard: React.FC<AnimeReviewCardProps> = ({
                   </span>
                 ))}
               </div>
-              <p className="mt-2 text-gray-700">{content}</p>
+              <p className="text-gray-700">{content}</p>
+              <div className="text-xs text-gray-500">{formatDate(createdAt)}</div>
             </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setIsEditing(true)}
-                className="p-2 text-gray-400 hover:text-pink-500 transition-colors"
-              >
-                <Edit className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => onDelete(id)}
-                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          <div className="text-xs text-gray-500">{formatDate(createdAt)}</div>
+          )}
         </div>
       )}
     </div>
