@@ -52,9 +52,20 @@ const AnimePage: React.FC = () => {
     return selectedTags.every((tag) => review.tags.includes(tag));
   });
 
-  const allTags = Array.from(new Set(reviews.flatMap((review) => review.tags)));
-
   const seasons: Season[] = ['冬', '春', '夏', '秋'];
+
+  const allTags = (() => {
+    const tags = Array.from(new Set(reviews.flatMap((review) => review.tags)));
+    const yearTags = tags.filter((tag) => tag.endsWith('年')).sort((a, b) => {
+      const yearA = parseInt(a.replace('年', ''));
+      const yearB = parseInt(b.replace('年', ''));
+      return yearB - yearA;
+    });
+    const seasonTags = seasons
+      .map((s) => `${s}季`)
+      .filter((seasonTag) => tags.includes(seasonTag));
+    return [...yearTags, ...seasonTags];
+  })();
 
   return (
     <div className="min-h-screen bg-pink-50 pb-20">
