@@ -1,30 +1,49 @@
 import React, { useState } from 'react';
-import { Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit, X } from 'lucide-react';
 
 interface ReviewCardProps {
   id: string;
   content: string;
-  category: string;
+  tags: string[];
   createdAt: string;
   onDelete: (id: string) => void;
-  onUpdate: (id: string, content: string, category: string) => void;
+  onUpdate: (id: string, content: string, tags: string[]) => void;
+  onTagClick: (tag: string) => void;
+  selectedTags: string[];
 }
 
 const ReviewCard: React.FC<ReviewCardProps> = ({
   id,
   content,
-  category,
+  tags,
   createdAt,
   onDelete,
   onUpdate,
+  onTagClick,
+  selectedTags,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(content);
-  const [editCategory, setEditCategory] = useState(category);
+  const [editTags, setEditTags] = useState<string[]>(tags);
+  const [editTagInput, setEditTagInput] = useState('');
 
   const handleSave = () => {
-    onUpdate(id, editContent, editCategory);
+    onUpdate(id, editContent, editTags);
     setIsEditing(false);
+  };
+
+  const handleEditTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && editTagInput.trim()) {
+      e.preventDefault();
+      if (editTags.length < 5 && !editTags.includes(editTagInput.trim())) {
+        setEditTags([...editTags, editTagInput.trim()]);
+        setEditTagInput('');
+      }
+    }
+  };
+
+  const removeEditTag = (tagToRemove: string) => {
+    setEditTags(editTags.filter((tag) => tag !== tagToRemove));
   };
 
   const formatDate = (dateString: string) => {
@@ -49,13 +68,37 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             rows={3}
             placeholder="输入复盘内容..."
           />
-          <input
-            type="text"
-            value={editCategory}
-            onChange={(e) => setEditCategory(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="输入分类..."
-          />
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
+              {editTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+                >
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() => removeEditTag(tag)}
+                    className="ml-1 text-blue-600 hover:text-blue-800"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <input
+              type="text"
+              value={editTagInput}
+              onChange={(e) => setEditTagInput(e.target.value)}
+              onKeyDown={handleEditTagKeyDown}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder={editTags.length >= 5 ? '已达到最大tag数量' : '输入tag后按回车添加...'}
+              disabled={editTags.length >= 5}
+            />
+            <p className="text-xs text-gray-500">
+              已添加 {editTags.length}/5 个tag
+            </p>
+          </div>
           <div className="flex justify-end space-x-2">
             <button
               onClick={() => setIsEditing(false)}
@@ -65,7 +108,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             </button>
             <button
               onClick={handleSave}
-              className="px-3 py-1 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors"
+              disabled={!editContent.trim() || editTags.length === 0}
+              className="px-3 py-1 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               保存
             </button>
@@ -74,13 +118,25 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
       ) : (
         <div className="space-y-2">
           <div className="flex justify-between items-start">
-            <div>
-              <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                {category}
-              </span>
-              <p className="mt-2 text-gray-700">{content}</p>
+            <div className="flex-1">
+              <div className="flex flex-wrap gap-2 mb-2">
+                {tags.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => onTagClick(tag)}
+                    className={`px-2 py-1 rounded-full text-xs font-medium transition-colors ${
+                      selectedTags.includes(tag)
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+              <p className="text-gray-700">{content}</p>
             </div>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 ml-2">
               <button
                 onClick={() => setIsEditing(true)}
                 className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
