@@ -1,57 +1,89 @@
-# React + TypeScript + Vite
+# 项目技术栈与使用说明
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📋 项目技术栈
 
-Currently, two official plugins are available:
+### 核心技术
+- **React**: ^18.3.1 - 前端UI库
+- **TypeScript**: ~5.8.3 - 静态类型检查
+- **Vite**: ^6.3.5 - 现代化构建工具
+- **React Router**: ^7.3.0 - 路由管理
+- **Zustand**: ^5.0.3 - 状态管理（带localStorage持久化）
+- **Tailwind CSS**: ^3.4.17 - 实用优先的CSS框架
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 辅助工具
+- **clsx** + **tailwind-merge**: 类名管理
+- **lucide-react**: 图标库
+- **ESLint**: 代码质量检查
 
-## Expanding the ESLint configuration
+## 🚀 快速开始
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 方法一：使用启动脚本（推荐）
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+#### Windows系统
+1. 双击运行 `start.bat` 文件
+2. 脚本会自动安装依赖并启动开发服务器
+
+#### Unix系统（Linux/macOS）
+1. 在终端中执行：`./start.sh`
+2. 脚本会自动安装依赖并启动开发服务器
+
+### 方法二：手动操作
+
+1. **安装依赖**
+   ```bash
+   npm install
+   ```
+
+2. **启动开发服务器**
+   ```bash
+   npm run dev
+   ```
+
+3. **构建生产版本**
+   ```bash
+   npm run build
+   ```
+
+4. **预览生产构建**
+   ```bash
+   npm run preview
+   ```
+
+## 📁 项目结构
+
+```
+/src
+  /assets          # 静态资源
+  /components      # 组件
+  /hooks           # 自定义钩子
+  /lib             # 工具库
+  /pages           # 页面
+  /store           # 状态管理
+  App.tsx          # 应用根组件
+  main.tsx         # 应用入口
+  index.css        # 全局样式
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ✨ 功能特性
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **生活复盘**：记录日常待优化事项，支持标签管理和筛选
+- **动漫记录**：记录动漫观看体验，按季度和年份分类
+- **数据持久化**：使用localStorage存储数据，刷新页面或重启服务器后数据不丢失
+- **响应式设计**：适配不同屏幕尺寸
+- **深色模式**：支持切换主题
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🔧 开发配置
+
+- **TypeScript**：已配置路径别名 `@/` 指向 `src/` 目录
+- **Tailwind CSS**：已配置深色模式支持
+- **ESLint**：代码质量检查
+
+## 📝 注意事项
+
+- 确保已安装 Node.js 16.0+ 版本
+- 启动脚本会自动处理依赖安装和服务器启动
+- 数据存储在浏览器的 localStorage 中，清除浏览器数据会导致数据丢失
+
+## 🌸 关于项目
+
+这是一个使用现代前端技术栈构建的个人记录应用，旨在提供简单易用的界面来记录生活和动漫观看体验。项目采用了模块化设计，易于扩展和维护。
