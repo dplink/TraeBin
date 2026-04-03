@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Film, MoreHorizontal } from 'lucide-react';
+import { Home, Film, User } from 'lucide-react';
 
 const BottomNav: React.FC = () => {
   const location = useLocation();
@@ -18,9 +18,9 @@ const BottomNav: React.FC = () => {
       label: '影评',
     },
     {
-      path: '/empty',
-      icon: <MoreHorizontal className="w-6 h-6" />,
-      label: '更多',
+      path: '/user',
+      icon: <User className="w-6 h-6" />,
+      label: '我的',
     },
   ];
 

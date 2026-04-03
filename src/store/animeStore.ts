@@ -18,6 +18,8 @@ interface AnimeStore {
   addReview: (title: string, year: number, season: Season, content: string) => void;
   deleteReview: (id: string) => void;
   updateReview: (id: string, title: string, year: number, season: Season, content: string) => void;
+  setReviews: (reviews: AnimeReview[]) => void;
+  addReviews: (reviews: AnimeReview[]) => void;
 }
 
 export const useAnimeStore = create<AnimeStore>()(
@@ -45,6 +47,10 @@ export const useAnimeStore = create<AnimeStore>()(
         reviews: state.reviews.map((review) =>
           review.id === id ? { ...review, title, year, season, tags: [`${year}年`, `${season}季`], content } : review
         ),
+      })),
+      setReviews: (reviews) => set({ reviews }),
+      addReviews: (reviews) => set((state) => ({
+        reviews: [...state.reviews, ...reviews]
       })),
     }),
     {

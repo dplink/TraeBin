@@ -13,6 +13,8 @@ interface ReviewStore {
   addReview: (content: string, tags: string[]) => void;
   deleteReview: (id: string) => void;
   updateReview: (id: string, content: string, tags: string[]) => void;
+  setReviews: (reviews: ReviewItem[]) => void;
+  addReviews: (reviews: ReviewItem[]) => void;
 }
 
 export const useReviewStore = create<ReviewStore>()(
@@ -37,6 +39,10 @@ export const useReviewStore = create<ReviewStore>()(
         reviews: state.reviews.map((review) =>
           review.id === id ? { ...review, content, tags } : review
         ),
+      })),
+      setReviews: (reviews) => set({ reviews }),
+      addReviews: (reviews) => set((state) => ({
+        reviews: [...state.reviews, ...reviews]
       })),
     }),
     {
