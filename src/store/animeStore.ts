@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 type Season = '冬' | '春' | '夏' | '秋';
 
@@ -49,6 +49,7 @@ export const useAnimeStore = create<AnimeStore>()(
     }),
     {
       name: 'anime-review-storage-v3',
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

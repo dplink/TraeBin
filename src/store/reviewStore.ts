@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface ReviewItem {
   id: string;
@@ -41,6 +41,7 @@ export const useReviewStore = create<ReviewStore>()(
     }),
     {
       name: 'review-storage-v2',
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );
