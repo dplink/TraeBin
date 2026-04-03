@@ -40,20 +40,7 @@ export const useReviewStore = create<ReviewStore>()(
       })),
     }),
     {
-      name: 'review-storage',
-      migrate: (persistedState: unknown) => {
-        const state = persistedState as { reviews: Array<{ id: string; content: string; category?: string; tags?: string[]; createdAt: string }> };
-        if (state && state.reviews) {
-          return {
-            ...state,
-            reviews: state.reviews.map((review) => ({
-              ...review,
-              tags: review.tags || (review.category ? [review.category] : []),
-            })),
-          };
-        }
-        return state;
-      },
+      name: 'review-storage-v2',
     }
   )
 );
